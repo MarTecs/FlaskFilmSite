@@ -1,20 +1,6 @@
 # 用来存放数据模型
 from datetime import datetime
-import pymysql
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-app = Flask(__name__)
-
-# 配置参考http://www.pythondoc.com/flask-sqlalchemy/config.html
-# 用于连接数据的数据库
-# 格式：mysql://username:password@server/db
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@localhost:3306/movie"
-# 如果设置成 True (默认情况)，Flask-SQLAlchemy 将会追踪对象的修改并且发送信号。
-# 这需要额外的内存， 如果不必要的可以禁用它。
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
-# 实例化SQLAlchemy ,并传入app对象
-db = SQLAlchemy(app)
+from app import db
 
 
 # 注册的会员数据模型，也就是会员表
@@ -49,7 +35,7 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User %s>" % self.name
-    
+
 
 # 会员登录日志表
 class Userlog(db.Model):
@@ -157,7 +143,7 @@ class Comment(db.Model):
 
     def __repr__(self):
         return "<Comment %s>" % self.id
-    
+
 
 # 电影收藏表
 class Moviecol(db.Model):
@@ -234,6 +220,10 @@ class Admin(db.Model):
     def __repr__(self):
         return "<Admin %r>" % self.name
 
+    def check_pwd(self, pwd):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.pwd, pwd)
+
 
 # 管理员登录日志模型
 class Adminlog(db.Model):
@@ -272,7 +262,7 @@ class Oplog(db.Model):
 if __name__ == "__main__":
     # 根据模型生成表
     # db.create_all()
-    
+
     # role = Role(
     #     name="超级管理员",
     #     auths=""
@@ -281,6 +271,7 @@ if __name__ == "__main__":
     # db.session.commit()
 
     from werkzeug.security import generate_password_hash
+
     admin = Admin(
         name="imoocmovie",
         pwd=generate_password_hash("imoocmovie"),
