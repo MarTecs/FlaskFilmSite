@@ -18,6 +18,7 @@
 11. 静态资源文件替换成url_for是什么鬼
 12. url_for() 而不是 url_for=
 13. {% block %}中的%与{和}不能有空格
+14. 可以使用uuid.uuid4().hex 生成一个唯一的令牌
 
 ### 前台布局搭建：
 1.  静态文件引入 {{ url_for('static', filename='文件路径') }}
